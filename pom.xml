@@ -8,10 +8,9 @@
 	<artifactId>KurGiangremake</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>KurGiangremake</name>
-	<description>Spring Boot REST API Step 1 - In-Memory Storage</description>
+	<description>Spring Boot REST API with JUnit Testing</description>
 
 	<properties>
-		<!-- Dùng JDK 17 cho ổn định -->
 		<java.version>17</java.version>
 		<spring.boot.version>3.2.5</spring.boot.version>
 	</properties>
@@ -39,21 +38,34 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.32</version> <!-- ổn định cho JDK 17 -->
+			<version>1.18.32</version>
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Test -->
+		<!-- Spring Boot Starter Test -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Spring Data JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- H2 Database (in-memory DB for testing) -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
-			<!-- Plugin Maven Compiler -->
+			<!-- Maven Compiler Plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

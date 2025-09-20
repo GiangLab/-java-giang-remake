@@ -1,0 +1,56 @@
+package com.example.KurGiangremake.controller;
+
+import com.example.KurGiangremake.domain.User;
+import com.example.KurGiangremake.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+class UserControllerTest {
+
+    @Mock
+    private UserService userService;
+
+    @InjectMocks
+    private UserController userController;
+
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        user = new User(1L, "John", "Doe", "john@example.com", LocalDateTime.now(), true);
+    }
+
+    @Test
+    void testRegisterUser() {
+        // mock phương thức addUser của service
+        when(userService.addUser(user)).thenReturn(user);
+
+        ResponseEntity<User> response = userController.registerUser(user);
+
+        // kiểm tra tên
+        assertEquals("John", response.getBody().getFirstName());
+        verify(userService, times(1)).addUser(user);
+    }
+
+    @Test
+    void testLoginUser() {
+        // mock phương thức getUserById của service
+        when(userService.getUserById(1L)).thenReturn(Optional.of(user));
+
+        ResponseEntity<User> response = userController.loginUser(1L);
+
+        assertEquals("John", response.getBody().getFirstName());
+        verify(userService, times(1)).getUserById(1L);
+    }
+}
