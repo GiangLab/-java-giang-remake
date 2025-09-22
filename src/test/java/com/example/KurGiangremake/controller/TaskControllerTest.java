@@ -26,20 +26,37 @@ class TaskControllerTest {
 
     @Test
     void testGetAllTasks() {
-        Task task = new Task(1L, 1L, "Title", "Desc", TaskStatus.PENDING, LocalDate.now(), LocalDate.now().plusDays(1), false);
+        Task task = new Task();
+        task.setId(1L);
+        task.setUserId(1L);
+        task.setTitle("Title");
+        task.setDescription("Desc");
+        task.setStatus(TaskStatus.PENDING);
+        task.setStartDate(LocalDate.now());
+        task.setEndDate(LocalDate.now().plusDays(1));
+        task.setDeleted(false);
+
         when(taskService.getAllTasks(1L)).thenReturn(List.of(task));
 
         List<Task> result = taskController.getAllTasks(1L);
         assertEquals(1, result.size());
+        assertEquals("Title", result.get(0).getTitle());
     }
 
     @Test
     void testGetPendingTasks() {
-        Task task = new Task(1L, 1L, "Title", "Desc", TaskStatus.PENDING, LocalDate.now(), LocalDate.now().plusDays(1), false);
+        Task task = new Task();
+        task.setId(2L);
+        task.setUserId(1L);
+        task.setTitle("Task Pending");
+        task.setStatus(TaskStatus.PENDING);
+        task.setDeleted(false);
+
         when(taskService.getPendingTasks(1L)).thenReturn(List.of(task));
 
         List<Task> result = taskController.getPendingTasks(1L);
         assertEquals(1, result.size());
         assertEquals(TaskStatus.PENDING, result.get(0).getStatus());
+        assertEquals("Task Pending", result.get(0).getTitle());
     }
 }

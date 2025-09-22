@@ -7,32 +7,38 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskService(TaskRepository taskRepository) { this.taskRepository = taskRepository; }
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
 
+    // Get all tasks of a user
     public List<Task> getAllTasks(Long userId) {
-        return taskRepository.findAll().stream()
-                .filter(t -> !t.isDeleted() && t.getUserId().equals(userId))
-                .collect(Collectors.toList());
+        return taskRepository.findByUserIdAndDeletedFalse(userId);
     }
 
+    // Get pending tasks of a user
     public List<Task> getPendingTasks(Long userId) {
-        return taskRepository.findAll().stream()
-                .filter(t -> t.getStatus() == TaskStatus.PENDING && !t.isDeleted() && t.getUserId().equals(userId))
-                .collect(Collectors.toList());
+        return taskRepository.findByUserIdAndStatusAndDeletedFalse(userId, TaskStatus.PENDING);
     }
 
+    // Mark a task as deleted
     public boolean markTaskDeleted(Long taskId) {
-        Optional<Task> task = taskRepository.findById(taskId);
-        task.ifPresent(t -> t.setDeleted(true));
-        return task.isPresent();
+        Optional<Task> taskOpt = taskRepository.findById(taskId);
+        taskOpt.ifPresent(task -> {
+            task.setDeleted(true);
+            taskRepository.save(task);
+        });
+        return taskOpt.isPresent();
     }
 
-    public void addTask(Task task) { taskRepository.add(task); }
+    // Add new task
+    public Task addTask(Task task) {
+        return taskRepository.save(task);
+    }
 }

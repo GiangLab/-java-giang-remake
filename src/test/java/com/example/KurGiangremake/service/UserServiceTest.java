@@ -27,7 +27,13 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        user = new User(1L, "John", "Doe", "john@example.com", LocalDateTime.now(), true);
+        user = new User();
+        user.setId(1L);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setUsername("john@example.com");
+        user.setCreatedAt(LocalDateTime.now());
+        user.setActive(true);
     }
 
     @Test

@@ -15,17 +15,17 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
-    // Lấy tất cả notification của user
+    // Get all notifications for a user
     public List<Notification> getAllUserNotifications(Long userId) {
         return notificationRepository.findByUserId(userId);
     }
 
-    // Lấy các notification còn pending của user
+    // Get all pending notifications for a user
     public List<Notification> getPendingUserNotifications(Long userId) {
         return notificationRepository.findPendingByUserId(userId);
     }
 
-    // Thêm notification mới
+    // Add new notification
     public Notification addNotification(Notification notification) {
         return notificationRepository.save(notification);
     }

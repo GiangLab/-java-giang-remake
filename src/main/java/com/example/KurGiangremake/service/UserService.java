@@ -16,27 +16,27 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    // Thêm user mới
+    // Add a new user
     public User addUser(User user) {
         return userRepository.save(user);
     }
 
-    // Lấy user theo ID
+    // Get user by ID
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
 
-    // Lấy tất cả user
+    // Get all users
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // Đăng ký user (tương đương addUser)
+    // Register a user (same as addUser)
     public User register(User user) {
         return userRepository.save(user);
     }
 
-    // Login theo username (repository phải có findByUsername)
+    // Login by username
     public Optional<User> login(String username) {
         return userRepository.findByUsername(username);
     }

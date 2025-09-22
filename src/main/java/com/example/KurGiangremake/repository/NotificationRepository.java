@@ -10,11 +10,10 @@ import java.util.List;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    // Lấy tất cả notification của user
+    // Get all notifications for a user
     List<Notification> findByUserId(Long userId);
 
-    // Lấy các notification còn pending của user
+    // Get all pending notifications for a user
     @Query("SELECT n FROM Notification n WHERE n.user.id = :userId AND n.status = 'PENDING'")
     List<Notification> findPendingByUserId(Long userId);
-
 }

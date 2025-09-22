@@ -6,27 +6,25 @@ import com.example.KurGiangremake.domain.User;
 import com.example.KurGiangremake.repository.NotificationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class NotificationServiceTest {
+class NotificationServiceTest {
 
     private NotificationRepository notificationRepository;
     private NotificationService notificationService;
-
     private User user;
 
     @BeforeEach
     void setUp() {
-        // Mock repository
         notificationRepository = mock(NotificationRepository.class);
         notificationService = new NotificationService(notificationRepository);
 
-        // Tạo user mẫu
         user = new User();
         user.setId(1L);
         user.setFirstName("John");
@@ -48,8 +46,6 @@ public class NotificationServiceTest {
         n2.setStatus(NotificationStatus.SENT);
 
         List<Notification> all = Arrays.asList(n1, n2);
-
-        // Khi gọi repo thì trả về danh sách trên
         when(notificationRepository.findByUserId(1L)).thenReturn(all);
 
         List<Notification> result = notificationService.getAllUserNotifications(1L);
@@ -67,8 +63,6 @@ public class NotificationServiceTest {
         n1.setStatus(NotificationStatus.PENDING);
 
         List<Notification> pending = Arrays.asList(n1);
-
-        // Khi gọi repo thì trả về danh sách pending
         when(notificationRepository.findPendingByUserId(1L)).thenReturn(pending);
 
         List<Notification> result = notificationService.getPendingUserNotifications(1L);
