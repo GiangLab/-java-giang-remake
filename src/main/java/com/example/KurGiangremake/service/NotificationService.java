@@ -25,8 +25,10 @@ public class NotificationService {
         return notificationRepository.findPendingByUserId(userId);
     }
 
-    // Add new notification
-    public Notification addNotification(Notification notification) {
+    /**
+     * Save a new notification (chỉ được gọi từ Kafka Listener).
+     */
+    public Notification saveNotification(Notification notification) {
         return notificationRepository.save(notification);
     }
 }
