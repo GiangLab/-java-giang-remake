@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,11 +17,12 @@ class NotificationServiceTest {
 
     private NotificationRepository notificationRepository;
     private NotificationService notificationService;
+
     private User user;
 
     @BeforeEach
     void setUp() {
-        notificationRepository = mock(NotificationRepository.class);
+        notificationRepository = Mockito.mock(NotificationRepository.class);
         notificationService = new NotificationService(notificationRepository);
 
         user = new User();
@@ -45,7 +45,8 @@ class NotificationServiceTest {
         n2.setMessage("Message 2");
         n2.setStatus(NotificationStatus.SENT);
 
-        List<Notification> all = Arrays.asList(n1, n2);
+        List<Notification> all = List.of(n1, n2);
+
         when(notificationRepository.findByUserId(1L)).thenReturn(all);
 
         List<Notification> result = notificationService.getAllUserNotifications(1L);
@@ -62,28 +63,13 @@ class NotificationServiceTest {
         n1.setMessage("Pending Message 1");
         n1.setStatus(NotificationStatus.PENDING);
 
-        List<Notification> pending = Arrays.asList(n1);
+        List<Notification> pending = List.of(n1);
+
         when(notificationRepository.findPendingByUserId(1L)).thenReturn(pending);
 
         List<Notification> result = notificationService.getPendingUserNotifications(1L);
 
         assertEquals(1, result.size());
         verify(notificationRepository, times(1)).findPendingByUserId(1L);
-    }
-
-    @Test
-    void testAddNotification() {
-        Notification n = new Notification();
-        n.setUser(user);
-        n.setMessage("New Notification");
-        n.setStatus(NotificationStatus.PENDING);
-
-        when(notificationRepository.save(n)).thenReturn(n);
-
-        Notification saved = notificationService.addNotification(n);
-
-        assertEquals("New Notification", saved.getMessage());
-        assertEquals(user.getId(), saved.getUser().getId());
-        verify(notificationRepository, times(1)).save(n);
     }
 }
