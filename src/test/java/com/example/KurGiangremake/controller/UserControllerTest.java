@@ -28,24 +28,27 @@ class UserControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        user = new User(1L, "John", "Doe", "john@example.com", LocalDateTime.now(), true);
+        user = new User();
+        user.setId(1L);
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setUsername("john@example.com");
+        user.setCreatedAt(LocalDateTime.now());
+        user.setActive(true);
     }
 
     @Test
     void testRegisterUser() {
-        // mock phương thức addUser của service
         when(userService.addUser(user)).thenReturn(user);
 
         ResponseEntity<User> response = userController.registerUser(user);
 
-        // kiểm tra tên
         assertEquals("John", response.getBody().getFirstName());
         verify(userService, times(1)).addUser(user);
     }
 
     @Test
     void testLoginUser() {
-        // mock phương thức getUserById của service
         when(userService.getUserById(1L)).thenReturn(Optional.of(user));
 
         ResponseEntity<User> response = userController.loginUser(1L);

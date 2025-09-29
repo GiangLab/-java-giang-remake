@@ -11,22 +11,34 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String firstName;
+
+    @Column(nullable = false)
     private String lastName;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
     private boolean active;
 
     // Constructor mặc định
     public User() {}
 
     // Constructor đầy đủ
-    public User(Long id, String firstName, String lastName, String username, LocalDateTime createdAt, boolean active) {
+    public User(Long id, String firstName, String lastName, String username, String password, LocalDateTime createdAt, boolean active) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
+        this.password = password;
         this.createdAt = createdAt;
         this.active = active;
     }
@@ -46,4 +58,10 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    // Tự động set createdAt khi insert
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

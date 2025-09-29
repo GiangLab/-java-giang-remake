@@ -1,20 +1,18 @@
 package com.example.KurGiangremake.repository;
 
 import com.example.KurGiangremake.domain.Task;
+import com.example.KurGiangremake.domain.TaskStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class TaskRepository {
-    private final List<Task> tasks = new ArrayList<>();
+@Repository
+public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    public List<Task> findAll() { return tasks; }
+    // Lấy tất cả task của user chưa bị xóa
+    List<Task> findByUserIdAndDeletedFalse(Long userId);
 
-    public Optional<Task> findById(Long id) {
-        return tasks.stream().filter(t -> t.getId().equals(id)).findFirst();
-    }
-
-    public void add(Task task) { tasks.add(task); }
+    // Lấy tất cả task pending của user chưa bị xóa
+    List<Task> findByUserIdAndStatusAndDeletedFalse(Long userId, TaskStatus status);
 }
-
