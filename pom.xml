@@ -11,7 +11,7 @@
 	<packaging>jar</packaging>
 
 	<name>KurGiangremake</name>
-	<description>Spring Boot project with PostgreSQL and Flyway</description>
+	<description>Spring Boot project with PostgreSQL, Flyway, and Redis caching</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -50,6 +50,24 @@
 			<artifactId>flyway-core</artifactId>
 		</dependency>
 
+		<!-- Spring Boot Starter Cache -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+
+		<!-- Spring Data Redis -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!-- Spring Data Redis (bao gồm Lettuce client) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
 		<!-- Lombok (optional, for getters/setters) -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -79,22 +97,12 @@
 			<version>5.3.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-core</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 
 	</dependencies>
 
