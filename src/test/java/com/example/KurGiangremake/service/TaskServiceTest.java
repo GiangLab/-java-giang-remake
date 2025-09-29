@@ -6,10 +6,11 @@ import com.example.KurGiangremake.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.kafka.core.KafkaTemplate;
 
 import java.time.LocalDate;
-import java.util.Optional;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,12 +18,14 @@ import static org.mockito.Mockito.*;
 class TaskServiceTest {
 
     private TaskRepository taskRepository;
+    private KafkaTemplate<String, String> kafkaTemplate; // Thêm
     private TaskService taskService;
 
     @BeforeEach
     void setUp() {
         taskRepository = Mockito.mock(TaskRepository.class);
-        taskService = new TaskService(taskRepository);
+        kafkaTemplate = Mockito.mock(KafkaTemplate.class); // Mock Kafka
+        taskService = new TaskService(taskRepository, kafkaTemplate); // Truyền đủ args
     }
 
     @Test
@@ -37,7 +40,7 @@ class TaskServiceTest {
         task.setEndDate(LocalDate.now().plusDays(1));
         task.setDeleted(false);
 
-        when(taskRepository.findAll()).thenReturn(List.of(task));
+        when(taskRepository.findByUserIdAndDeletedFalse(1L)).thenReturn(List.of(task));
 
         List<Task> tasks = taskService.getAllTasks(1L);
         assertEquals(1, tasks.size());
@@ -60,7 +63,8 @@ class TaskServiceTest {
         task2.setStatus(TaskStatus.COMPLETED);
         task2.setDeleted(false);
 
-        when(taskRepository.findAll()).thenReturn(List.of(task1, task2));
+        when(taskRepository.findByUserIdAndStatusAndDeletedFalse(1L, TaskStatus.PENDING))
+                .thenReturn(List.of(task1));
 
         List<Task> pending = taskService.getPendingTasks(1L);
         assertEquals(1, pending.size());
@@ -79,5 +83,21 @@ class TaskServiceTest {
         boolean deleted = taskService.markTaskDeleted(1L);
         assertTrue(deleted);
         assertTrue(task.isDeleted());
+    }
+
+    @Test
+    void testAddTaskPublishesKafkaMessage() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setUserId(1L);
+        task.setTitle("New Task");
+
+        when(taskRepository.save(task)).thenReturn(task);
+
+        Task saved = taskService.addTask(task);
+
+        assertEquals("New Task", saved.getTitle());
+        verify(kafkaTemplate, times(1)).send(eq("tasks"), anyString());
+        verify(taskRepository, times(1)).save(task);
     }
 }
