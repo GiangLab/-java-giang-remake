@@ -1,35 +1,20 @@
 package com.example.KurGiangremake.repository;
 
 import com.example.KurGiangremake.domain.Task;
-import com.example.KurGiangremake.domain.TaskStatus;
-import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-@Repository
 public class TaskRepository {
-    private final Map<Long, Task> tasks = new HashMap<>();
-    private long idCounter = 1;
+    private final List<Task> tasks = new ArrayList<>();
 
-    public Task save(Task task) {
-        if (task.getId() == null) {
-            task.setId(idCounter++);
-        }
-        tasks.put(task.getId(), task);
-        return task;
-    }
-
-    public List<Task> findAll() {
-        return new ArrayList<>(tasks.values());
-    }
-
-    public List<Task> findPending() {
-        return tasks.values().stream()
-                .filter(t -> !t.isDeleted() && t.getStatus() == TaskStatus.PENDING)
-                .toList();
-    }
+    public List<Task> findAll() { return tasks; }
 
     public Optional<Task> findById(Long id) {
-        return Optional.ofNullable(tasks.get(id));
+        return tasks.stream().filter(t -> t.getId().equals(id)).findFirst();
     }
+
+    public void add(Task task) { tasks.add(task); }
 }
+

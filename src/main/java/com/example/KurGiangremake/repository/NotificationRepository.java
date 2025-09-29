@@ -1,32 +1,20 @@
 package com.example.KurGiangremake.repository;
 
 import com.example.KurGiangremake.domain.Notification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.List;
 
 @Repository
-public class NotificationRepository {
-    private final Map<Long, Notification> notifications = new HashMap<>();
-    private long idCounter = 1;
+public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    public Notification save(Notification notification) {
-        if (notification.getId() == null) {
-            notification.setId(idCounter++);
-        }
-        notifications.put(notification.getId(), notification);
-        return notification;
-    }
+    // Lấy tất cả notification của user
+    List<Notification> findByUserId(Long userId);
 
-    public List<Notification> findAllByUserId(Long userId) {
-        return notifications.values().stream()
-                .filter(n -> n.getUserId().equals(userId))
-                .toList();
-    }
+    // Lấy các notification còn pending của user
+    @Query("SELECT n FROM Notification n WHERE n.user.id = :userId AND n.status = 'PENDING'")
+    List<Notification> findPendingByUserId(Long userId);
 
-    public List<Notification> findUnreadByUserId(Long userId) {
-        return notifications.values().stream()
-                .filter(n -> n.getUserId().equals(userId) && !n.isRead())
-                .toList();
-    }
 }

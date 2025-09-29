@@ -1,30 +1,23 @@
 package com.example.KurGiangremake.repository;
 
 import com.example.KurGiangremake.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Optional;
 
 @Repository
-public class UserRepository {
-    private final Map<Long, User> users = new HashMap<>();
-    private long idCounter = 1;
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    public User save(User user) {
-        if (user.getId() == null) {
-            user.setId(idCounter++);
-        }
-        users.put(user.getId(), user);
-        return user;
-    }
+    // Tìm user theo username
+    Optional<User> findByUsername(String username);
 
-    public Optional<User> findById(Long id) {
-        return Optional.ofNullable(users.get(id));
-    }
+    // Tìm user theo email nếu cần
+    Optional<User> findByEmail(String email);
 
-    public Optional<User> findByUsernameAndPassword(String username, String password) {
-        return users.values().stream()
-                .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
-                .findFirst();
-    }
+    // Kiểm tra user tồn tại theo username
+    boolean existsByUsername(String username);
+
+    // Kiểm tra user tồn tại theo email
+    boolean existsByEmail(String email);
 }

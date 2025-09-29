@@ -10,28 +10,30 @@ import java.util.List;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
+
     private final TaskService taskService;
+
     public TaskController(TaskService taskService) { this.taskService = taskService; }
 
-    @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        return ResponseEntity.ok(taskService.createTask(task));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok(taskService.getAllTasks());
+    @GetMapping("/all")
+    public List<Task> getAllTasks(@RequestParam Long userId) {
+        return taskService.getAllTasks(userId);
     }
 
     @GetMapping("/pending")
-    public ResponseEntity<List<Task>> getPendingTasks() {
-        return ResponseEntity.ok(taskService.getPendingTasks());
+    public List<Task> getPendingTasks(@RequestParam Long userId) {
+        return taskService.getPendingTasks(userId);
+    }
+
+    @PostMapping
+    public ResponseEntity<Task> addTask(@RequestBody Task task) {
+        taskService.addTask(task);
+        return ResponseEntity.ok(task);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        return taskService.deleteTask(id)
-                ? ResponseEntity.noContent().build()
-                : ResponseEntity.notFound().build();
+        boolean deleted = taskService.markTaskDeleted(id);
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 }

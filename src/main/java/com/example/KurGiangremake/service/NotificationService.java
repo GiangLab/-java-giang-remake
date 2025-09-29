@@ -1,35 +1,32 @@
 package com.example.KurGiangremake.service;
 
 import com.example.KurGiangremake.domain.Notification;
-import com.example.KurGiangremake.domain.NotificationType;
 import com.example.KurGiangremake.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class NotificationService {
+
     private final NotificationRepository notificationRepository;
+
     public NotificationService(NotificationRepository notificationRepository) {
         this.notificationRepository = notificationRepository;
     }
 
-    public Notification createNotification(Long userId, String message, NotificationType type) {
-        Notification n = new Notification();
-        n.setUserId(userId);
-        n.setMessage(message);
-        n.setType(type);
-        n.setCreatedAt(LocalDateTime.now());
-        n.setRead(false);
-        return notificationRepository.save(n);
-    }
-
+    // Lấy tất cả notification của user
     public List<Notification> getAllUserNotifications(Long userId) {
-        return notificationRepository.findAllByUserId(userId);
+        return notificationRepository.findByUserId(userId);
     }
 
+    // Lấy các notification còn pending của user
     public List<Notification> getPendingUserNotifications(Long userId) {
-        return notificationRepository.findUnreadByUserId(userId);
+        return notificationRepository.findPendingByUserId(userId);
+    }
+
+    // Thêm notification mới
+    public Notification addNotification(Notification notification) {
+        return notificationRepository.save(notification);
     }
 }
